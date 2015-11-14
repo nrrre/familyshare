@@ -1,0 +1,13 @@
+<!doctype html>
+<title>家庭分享计划</title>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+<div class="page">
+  <h1>家庭分享</h1>
+  <div class="metanav">
+    <a href="{{ url_for('logout') }}">退出</a>
+  </div>
+  {% for message in get_flashed_messages() %}
+    <div class="flash">{{ message }}</div>
+  {% endfor %}
+  {% block body %}{% endblock %}
+</div>

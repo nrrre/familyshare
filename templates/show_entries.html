@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<script>
+
+function removeElement(_element){
+  var _parentElement = _element.parentNode;
+  if(_parentElement){
+    _parentElement.removeChild(_element);
+  }
+}
+
+function show_reply(share_id){
+
+  if (!document.getElementById("reply_main")) {   
+
+    var reply_main = document.createElement("div");
+    var reply_form = document.createElement("form");
+    var reply_content = document.createElement("input");
+    var reply_submit = document.createElement("input");
+    var reply = document.getElementById("reply"+share_id);
+
+    reply_main.id = "reply_main";
+    reply_form.method = "POST";
+    reply_form.action = '/reply/' + share_id;
+    reply_content.type = "text";
+    reply_content.name = "reply_content";
+    reply_submit.type = "submit";
+    reply_submit.value = "submit";
+
+
+    reply.parentNode.insertBefore(reply_main, reply.nextSibling);
+    reply_main.appendChild(reply_form);
+    reply_form.appendChild(reply_content);
+    reply_form.appendChild(reply_submit);
+  
+  }else{
+    removeElement(document.getElementById("reply_main"));
+  }
+}
+</script>
+
+
+  {% if session.logged_in %}
+    <form action="{{ url_for('add_entry') }}" method="post" class="add-entry">
+      <dl>
+        <dd><textarea name="text" rows="5" cols="40"></textarea>
+        <dd><input type="submit" value="分享">
+      </dl>
+    </form>
+  {% endif %}
+  <ul class="entries">
+  {% for entry in entries %}
+    <li>
+      <h2>{{ entry.nickname }} :</h2>{{ entry.content|safe }}
+      <p>{{ entry.create_date }}</p>
+
+      <p id="reply{{ entry.id }}">
+        <a href="javascript:show_reply({{ entry.id }});">评论</a>
+        <a href="javascript:if(confirm('确定要删除这个分享吗?'))location='/del/{{ entry.id }}'">删除</a>
+      </p>
+
+      {% if entry.replys %}
+        {% for reply in entry.replys %}
+        <p class="reply"><b>{{ reply.nickname }}：</b>{{ reply.content }}   -- {{ reply.create_date }}</p>
+        {% endfor %}
+      {% endif %}
+
+    </li>
+  {% else %}
+    <li><em>Unbelievable.  No entries here so far</em></li>
+  {% endfor %}
+  </ul>
+{% endblock %}
