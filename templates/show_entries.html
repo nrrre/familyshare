@@ -42,9 +42,9 @@ function show_reply(share_id){
 
 
   {% if session.logged_in %}
-    <form action="{{ url_for('add_entry') }}" method="post" class="add-entry">
+    <form action="{{ url_for('add_entry') }}" method="post" class="add-entry" enctype="multipart/form-data">
       <dl>
-        <dd><textarea name="text" rows="5" cols="40"></textarea>
+        <dd><textarea name="text" rows="5" cols="40"></textarea><input name="image" type="file">
         <dd><input type="submit" value="分享">
       </dl>
     </form>
@@ -53,6 +53,9 @@ function show_reply(share_id){
   {% for entry in entries %}
     <li>
       <h2>{{ entry.nickname }} :</h2>{{ entry.content|safe }}
+      {% if entry.image %}
+      <div class="images"><img src="/uploads/{{ entry.image }}"></div>
+      {% endif %}
       <p>{{ entry.create_date }}</p>
 
       <p id="reply{{ entry.id }}">
